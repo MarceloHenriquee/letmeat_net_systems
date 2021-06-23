@@ -4,21 +4,21 @@ import logoimg from '../assets/images/logo.svg';
 import googleIconImg from '../assets/images/google-icon.svg';
 import '../styles/auth.scss';
 import { Button } from '../components/Button';
-import { auth, firebase } from '../services/firebase';
-
+import { AuthContext } from '../App';
+import { useContext } from 'react';
 
 export function Home()
 {
     const history = useHistory();
+    const { user, signInWithGoogle} = useContext(AuthContext)
+    
 
-    function hundleCreateRoom(){
-
-        const provider = new firebase.auth.GoogleAuthProvider();
-
-        auth.signInWithPopup(provider).then(result => {
-            console.log(result);
-        });
-        /* history.push('/rooms/new'); */
+    async function hundleCreateRoom(){
+        if (!user){
+           await signInWithGoogle();
+        }
+        
+        history.push('/rooms/new');
     }
 
     return (
@@ -29,6 +29,7 @@ export function Home()
               <p>Tire as dúvidas de suas audiências em tempo real</p>
             </aside>
             <main>
+                
                 <div className="main-content">
                     <img src={logoimg} alt="Letmeask" />
                     <button onClick={hundleCreateRoom} className="create-room">
